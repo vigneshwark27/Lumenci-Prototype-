@@ -143,15 +143,16 @@
   .dropdown-trigger:hover { background: var(--bg); color: var(--text-primary); }
   .dropdown-trigger .chevron { transition: transform 0.15s ease; color: var(--text-tertiary); }
   .dropdown.open .dropdown-trigger .chevron { transform: rotate(180deg); }
-  .dropdown.open .dropdown-menu { display: block; }
+  .dropdown.open .dropdown-trigger { background: var(--bg); color: var(--text-primary); }
 
   .dropdown-menu {
     position: absolute; top: calc(100% + 6px); right: 0; width: 260px;
     background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md);
     box-shadow: var(--shadow-md); padding: 6px; display: none; z-index: 40;
   }
+  .dropdown.open .dropdown-menu { display: block; }
   .dropdown-menu-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--text-tertiary); padding: 8px 10px 4px; font-weight: 600; }
-  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13.5px; color: var(--text-primary); cursor: pointer; }
+  .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: var(--radius-sm); font-size: 13.5px; color: var(--text-primary); }
   .dropdown-item:hover { background: var(--bg); }
   .dropdown-item .artifact-icon {
     width: 26px; height: 26px; border-radius: 6px; background: var(--accent-tint); color: var(--accent);
@@ -226,6 +227,8 @@
   .confidence-badge.medium { background: var(--status-review-bg); color: var(--status-review-fg); }
   .confidence-badge.low { background: var(--status-low-bg); color: var(--status-low-fg); }
 
+  .low-confidence-note { color: var(--status-low-fg); font-size: 13px; margin: 8px 0 0; }
+
   .msg-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
   .chip-btn {
     background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); font-size: 12.5px;
@@ -241,6 +244,20 @@
   .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
   .btn-reject { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; font-size: 13px; }
   .btn-reject:hover { border-color: var(--border-strong); color: var(--text-primary); }
+  .btn-upload-inline { background: var(--surface); border: 1px dashed var(--border-strong); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; font-size: 13px; }
+  .btn-upload-inline:hover { border-color: var(--accent); color: var(--accent); }
+  .action-btn-row button:disabled { opacity: 0.4; cursor: default; }
+
+  .inline-form { display: flex; gap: 8px; margin-top: 10px; }
+  .inline-form input {
+    flex: 1; padding: 8px 11px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 13px; font-family: var(--font-ui);
+  }
+  .inline-form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+  .edit-textarea {
+    width: 100%; font-family: var(--font-ui); font-size: 14px; line-height: 1.5; padding: 8px 10px;
+    border: 1px solid var(--border-strong); border-radius: 8px; resize: vertical; min-height: 60px; margin-bottom: 8px;
+  }
 
   .typing-dots {
     display: flex; gap: 4px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
@@ -282,8 +299,9 @@
   .input-hint { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px; color: var(--text-tertiary); padding: 0 4px; }
   .input-hint kbd { font-family: var(--font-mono); background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 10.5px; }
 
-  /* ============ CLAIMS PANEL ============ */
+  /* ============ CLAIM ELEMENTS PANEL ============ */
   .claims-panel { flex: 0 0 30%; max-width: 30%; display: flex; flex-direction: column; background: var(--surface-raised); min-height: 0; }
+
   .claims-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; justify-content: space-between; }
   .claims-header h2 { margin: 0; font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
   .claims-header .claim-scope { display: block; font-size: 11.5px; color: var(--text-tertiary); font-weight: 500; margin-top: 2px; font-family: var(--font-mono); }
@@ -327,16 +345,24 @@
   .progress-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-secondary); }
   .progress-label strong { color: var(--text-primary); font-weight: 600; }
 
+  .chat-scroll::-webkit-scrollbar, .claims-list::-webkit-scrollbar { width: 8px; }
+  .chat-scroll::-webkit-scrollbar-thumb, .claims-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
+  .chat-scroll::-webkit-scrollbar-track, .claims-list::-webkit-scrollbar-track { background: transparent; }
+
   @media (max-width: 920px) {
     .workspace { flex-direction: column; }
     .chat-panel, .claims-panel { flex: 1 1 auto; max-width: 100%; }
     .claims-panel { border-top: 1px solid var(--border); max-height: 40vh; }
+    .app-name-sub { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============ UPLOAD SCREEN ============ -->
+<!-- ============ SCREEN 1: UPLOAD ============ -->
 <div class="upload-screen" id="uploadScreen">
   <div class="upload-card">
     <div class="upload-card-header">
@@ -364,8 +390,9 @@
   </div>
 </div>
 
-<!-- ============ WORKSPACE APP ============ -->
+<!-- ============ SCREEN 2: WORKSPACE ============ -->
 <div class="app" id="appRoot">
+
   <header class="topnav">
     <div class="topnav-left">
       <div class="logo-mark">L</div>
@@ -384,13 +411,26 @@
             <div class="artifact-icon">CC</div>
             <div class="dropdown-item-text"><span class="dropdown-item-title">Claim 1 — Chart v3</span><span class="dropdown-item-meta">Updated 12 min ago</span></div>
           </div>
+          <div class="dropdown-item">
+            <div class="artifact-icon">CC</div>
+            <div class="dropdown-item-text"><span class="dropdown-item-title">Claim 1 — Chart v2</span><span class="dropdown-item-meta">Updated yesterday</span></div>
+          </div>
+          <div class="dropdown-menu-label">Reference Mappings</div>
+          <div class="dropdown-item">
+            <div class="artifact-icon">RM</div>
+            <div class="dropdown-item-text"><span class="dropdown-item-title">Reference A — Element Map</span><span class="dropdown-item-meta">Updated 3 days ago</span></div>
+          </div>
         </div>
       </div>
-      <button class="btn-export">Export</button>
+      <button class="btn-export">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5V9.5M7 9.5L4.2 6.7M7 9.5L9.8 6.7M2 10.5V11.5C2 11.7761 2.22386 12 2.5 12H11.5C11.7761 12 12 11.7761 12 11.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Export
+      </button>
     </div>
   </header>
 
   <main class="workspace">
+
     <section class="chat-panel">
       <div class="chat-topbar">
         <span>US 10,982,417 B2</span>
@@ -411,8 +451,8 @@
           </button>
         </div>
         <div class="input-hint">
-          <span>AI suggestions require attorney review.</span>
-          <span><kbd>Enter</kbd> to send</span>
+          <span>AI suggestions require attorney review before filing.</span>
+          <span><kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</span>
         </div>
       </div>
     </section>
@@ -442,6 +482,7 @@
         </div>
       </div>
     </aside>
+
   </main>
 </div>
 
@@ -450,31 +491,111 @@
 <script>
 /* =========================================================
    DATA MODEL
+   Each element carries a diagnostic profile (issueType,
+   confidence) used to drive the review card and its
+   contextual actions.
    ========================================================= */
 const claimElements = [
-  { id:'1.a', text:'A processor configured to receive a data stream from a plurality of sensor nodes;', status:'reviewed', evidence:'Ref A · ¶0028', reasoning:'Explicitly discloses processor receiving sensor data.', issueType:'Well Supported', confidenceLevel:'High', confidencePct:94 },
-  { id:'1.b', text:'wherein the processor is further configured to buffer the data stream in a memory prior to transmission;', status:'needs-review', evidence:'Ref A · ¶0041', reasoning:'Summarizes buffer passage rather than direct term mapping.', issueType:'Weak Reasoning', confidenceLevel:'Medium', confidencePct:68 },
-  { id:'1.c', text:'and dynamically adjusting a buffer size based on a measured network latency;', status:'needs-review', evidence:'Ref B · ¶0052', reasoning:'Adjusts buffer size, needs latency term verification.', issueType:'Unconfirmed Evidence', confidenceLevel:'Medium', confidencePct:71 },
-  { id:'1.d', text:'a transmitter coupled to the processor and configured to transmit the buffered data stream;', status:'reviewed', evidence:'Ref A · ¶0033', reasoning:'Discloses transmitter sending buffered stream.', issueType:'Well Supported', confidenceLevel:'High', confidencePct:92 },
-  { id:'1.e', text:'wherein the transmitter selects a transmission protocol based on the measured network latency; and', status:'needs-review', evidence:'Unassigned', reasoning:'No passage mapped yet.', issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:22 },
-  { id:'1.f', text:'a feedback loop configured to report transmission status back to the plurality of sensor nodes.', status:'pending', evidence:'Ref C · —', reasoning:'Feedback loop matched without exact paragraph.', issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:35 },
-  { id:'2.a', text:'The system of claim 1, wherein the plurality of sensor nodes comprises at least one temperature sensor;', status:'needs-review', evidence:'Ref A · ¶0019', reasoning:'Mentions temp sensor generally.', issueType:'Weak Evidence', confidenceLevel:'Medium', confidencePct:64 }
+  { id:'1.a', text:'A processor configured to receive a data stream from a plurality of sensor nodes;',
+    status:'reviewed', evidence:'Ref A · ¶0028', hasEvidence:true,
+    reasoning:'Reference A explicitly discloses a processor receiving sensor data over a network interface, directly matching this limitation.',
+    weakness:'This element has already been reviewed and is well supported. You can still ask me to refine it further.',
+    issueType:'Well Supported', confidenceLevel:'High', confidencePct:94,
+    recommendedAction:'No action needed — the mapping is well supported.' },
+
+  { id:'1.b', text:'wherein the processor is further configured to buffer the data stream in a memory prior to transmission;',
+    status:'needs-review', evidence:'Ref A · ¶0041', hasEvidence:true,
+    reasoning:"The chart cites Reference A's description of a buffer used before transmission, but the write-up mostly paraphrases the passage.",
+    weakness:'The reasoning summarizes the passage instead of tying each claim term to the disclosure directly, which weakens the mapping.',
+    issueType:'Weak Reasoning', confidenceLevel:'Medium', confidencePct:68,
+    recommendedAction:'Rewrite the reasoning to tie each claim term to the disclosure.' },
+
+  { id:'1.c', text:'and dynamically adjusting a buffer size based on a measured network latency;',
+    status:'needs-review', evidence:'Ref B · ¶0052', hasEvidence:true,
+    reasoning:'Reference B describes a controller that adjusts buffer size, cited as support for the dynamic-adjustment limitation.',
+    weakness:'The citation is close, but it hasn\u2019t been checked against the exact "based on a measured network latency" language in the claim.',
+    issueType:'Unconfirmed Evidence', confidenceLevel:'Medium', confidencePct:71,
+    recommendedAction:'Confirm the passage covers the exact latency language, or find one that does.' },
+
+  { id:'1.d', text:'a transmitter coupled to the processor and configured to transmit the buffered data stream;',
+    status:'reviewed', evidence:'Ref A · ¶0033', hasEvidence:true,
+    reasoning:'Reference A discloses a transmitter coupled to the processor that sends the buffered stream, matching this limitation directly.',
+    weakness:'Already reviewed and well supported.',
+    issueType:'Well Supported', confidenceLevel:'High', confidencePct:92,
+    recommendedAction:'No action needed — the mapping is well supported.' },
+
+  { id:'1.e', text:'wherein the transmitter selects a transmission protocol based on the measured network latency; and',
+    status:'needs-review', evidence:'Unassigned', hasEvidence:false,
+    reasoning:'No passage has been mapped to this limitation yet.',
+    weakness:'Without a mapped citation, this element can\u2019t be charted with confidence.',
+    issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:22,
+    recommendedAction:'Locate and map a supporting passage before charting this element.' },
+
+  { id:'1.f', text:'a feedback loop configured to report transmission status back to the plurality of sensor nodes.',
+    status:'pending', evidence:'Ref C · —', hasEvidence:true,
+    reasoning:'Reference C was flagged as a possible match for the feedback-loop limitation, but the specific paragraph hasn\u2019t been confirmed.',
+    weakness:'Marked pending until a specific supporting passage is confirmed.',
+    issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:35,
+    recommendedAction:'Confirm which paragraph of Reference C supports the feedback loop.' },
+
+  { id:'2.a', text:'The system of claim 1, wherein the plurality of sensor nodes comprises at least one temperature sensor;',
+    status:'needs-review', evidence:'Ref A · ¶0019', hasEvidence:true,
+    reasoning:'Reference A mentions a temperature sensor among the sensor nodes, cited as support for this dependent claim.',
+    weakness:'The citation identifies a temperature sensor generically, but doesn\u2019t confirm it belongs to "the plurality of sensor nodes" from claim 1.',
+    issueType:'Weak Evidence', confidenceLevel:'Medium', confidencePct:64,
+    recommendedAction:'Cite a passage tying the sensor to "the plurality of sensor nodes" specifically.' },
 ];
 
+/* Contextual actions offered on the review card, keyed by issue type */
+const ISSUE_ACTIONS = {
+  'Weak Evidence':        ['Strengthen Evidence', 'Explain Why', 'Upload Supporting Document'],
+  'Weak Reasoning':       ['Improve Reasoning', 'Explain Why', 'Rewrite Legal Language'],
+  'Unconfirmed Evidence': ['Strengthen Evidence', 'Explain Why', 'Upload Supporting Document'],
+  'Missing Mapping':      ['Find Missing Mapping', 'Upload Supporting Document', 'Provide Product URL'],
+  'Well Supported':       ['Rewrite Legal Language', 'Explain Why'],
+};
+
+const REFINEMENT_TEMPLATES = {
+  'Strengthen Evidence': (el) => ({
+    improvement: `Replace the current citation for ${el.id} with a passage that explicitly recites the missing language, rather than one that only implies it.`,
+    explanation: 'A passage using matching terminology supports a stronger reads-on argument than one requiring inference.',
+  }),
+  'Improve Reasoning': (el) => ({
+    improvement: `Rewrite the reasoning for ${el.id} to walk through each claim term and tie it explicitly to the corresponding disclosure, instead of summarizing the passage.`,
+    explanation: 'Element-by-element reasoning is harder to dispute during prosecution or litigation than a general paraphrase.',
+  }),
+  'Find Missing Mapping': (el) => ({
+    improvement: `Map ${el.id} to a newly identified passage that covers the portion of the claim language currently left unmapped.`,
+    explanation: 'This passage was not previously considered and closes the gap in the existing chart.',
+  }),
+  'Rewrite Legal Language': (el) => ({
+    improvement: `Reword the claim chart entry for ${el.id} to mirror the claim's exact terminology, avoiding paraphrase that could weaken the mapping.`,
+    explanation: "Charts that track claim language word-for-word are more persuasive and easier to defend.",
+  }),
+};
+
+const CLARIFY_OPTIONS = [
+  { label: 'Stronger evidence', action: 'Strengthen Evidence' },
+  { label: 'Better reasoning', action: 'Improve Reasoning' },
+  { label: 'Different supporting source', action: 'Find Missing Mapping' },
+  { label: 'Rewrite legal language', action: 'Rewrite Legal Language' },
+  { label: 'Other', action: null },
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
 let currentElementId = null;
+let pausedElementId = null;
+let pendingUploadElementId = null;
+let lastSuggestion = null;      // {elementId, improvement, explanation, confidencePct, citation}
+const historyStack = [];        // [{elementId, snapshot:{status,evidence,reasoning}}]
+let supportDocsCount = 0;
+const initialOpportunityCount = claimElements.filter(e => e.status === 'needs-review').length;
 
-/* DOM ELEMENTS */
-const uploadScreen = document.getElementById('uploadScreen');
-const appRoot = document.getElementById('appRoot');
-const claimChartDrop = document.getElementById('claimChartDrop');
-const claimChartInput = document.getElementById('claimChartInput');
-const claimChartFileName = document.getElementById('claimChartFileName');
-const supportDocsDrop = document.getElementById('supportDocsDrop');
-const supportDocsInput = document.getElementById('supportDocsInput');
-const supportDocsFileName = document.getElementById('supportDocsFileName');
-const analyzeBtn = document.getElementById('analyzeBtn');
-const sampleBtn = document.getElementById('sampleBtn');
-
+/* =========================================================
+   DOM REFS
+   ========================================================= */
 const chatScroll = document.getElementById('chatScroll');
 const claimsList = document.getElementById('claimsList');
 const claimsCountEl = document.getElementById('claimsCount');
@@ -484,50 +605,26 @@ const progressPct = document.getElementById('progressPct');
 const textarea = document.getElementById('chatTextarea');
 const sendBtn = document.getElementById('sendBtn');
 const attachBtn = document.getElementById('attachBtn');
-const hiddenFileInput = document.getElementById('hiddenFileInput');
+const fileInput = document.getElementById('hiddenFileInput');
 
-/* UPLOAD HANDLERS */
-claimChartDrop.onclick = () => claimChartInput.click();
-supportDocsDrop.onclick = () => supportDocsInput.click();
+/* =========================================================
+   GENERAL HELPERS
+   ========================================================= */
+function getElement(id) { return claimElements.find(e => e.id === id); }
 
-claimChartInput.onchange = (e) => {
-  if (e.target.files.length > 0) {
-    claimChartFileName.textContent = e.target.files[0].name;
-    analyzeBtn.disabled = false;
-  }
-};
-
-supportDocsInput.onchange = (e) => {
-  if (e.target.files.length > 0) {
-    supportDocsFileName.innerHTML = `${e.target.files.length} document(s) selected`;
-  }
-};
-
-function launchApp() {
-  uploadScreen.style.display = 'none';
-  appRoot.style.display = 'flex';
-  renderClaimsList();
-  updateHeaderCounts();
-  
-  addUserMessage("Session initialized.");
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Welcome to Lumenci AI Studio! I have mapped <strong>7 claim elements</strong> for US 10,982,417 B2.</p><p>Select any item on the right panel to begin.</p>`;
-    bubble(wrap, 'ai');
-  }, 300);
-}
-
-analyzeBtn.onclick = launchApp;
-sampleBtn.onclick = launchApp;
-
-/* UTILITIES */
 function escapeHtml(str) {
-  const d = document.createElement('div');
-  d.textContent = str;
-  return d.innerHTML;
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
 }
 
-function bubble(node, role) {
+function confidenceLabel(pct) {
+  if (pct >= 85) return 'High';
+  if (pct >= 65) return 'Medium';
+  return 'Low';
+}
+
+function bubble(contentNode, role) {
   const row = document.createElement('div');
   row.className = 'msg-row ' + role;
   const avatar = document.createElement('div');
@@ -535,7 +632,7 @@ function bubble(node, role) {
   avatar.textContent = role === 'ai' ? 'AI' : 'You';
   const bub = document.createElement('div');
   bub.className = 'msg-bubble';
-  bub.appendChild(node);
+  bub.appendChild(contentNode);
   row.appendChild(avatar);
   row.appendChild(bub);
   chatScroll.appendChild(row);
@@ -549,34 +646,71 @@ function addUserMessage(text) {
   bubble(wrap, 'user');
 }
 
-function aiRespond(fn, delay = 500) {
-  const typing = document.createElement('div');
-  typing.className = 'msg-row ai';
-  typing.innerHTML = `<div class="avatar ai">AI</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
-  chatScroll.appendChild(typing);
+function showTyping() {
+  const row = document.createElement('div');
+  row.className = 'msg-row ai';
+  row.innerHTML = `<div class="avatar ai">AI</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  chatScroll.appendChild(row);
   chatScroll.scrollTop = chatScroll.scrollHeight;
+  return row;
+}
 
+function aiRespond(buildFn, delay = 700) {
+  const typingRow = showTyping();
   setTimeout(() => {
-    typing.remove();
-    fn();
+    typingRow.remove();
+    buildFn();
   }, delay);
 }
 
-/* RENDERING PANEL */
+function pickCitation(el) {
+  const base = el.evidence && el.evidence.startsWith('Ref') ? el.evidence.split('·')[0].trim() : ['Ref A', 'Ref B', 'Ref C'][Math.floor(Math.random() * 3)];
+  const para = '¶0' + (20 + Math.floor(Math.random() * 70));
+  return `${base} · ${para}`;
+}
+
+function buildSuggestion(el, actionLabel, customText, opts = {}) {
+  let improvement, explanation;
+  if (customText) {
+    improvement = `Based on your note ("${customText}"), here's a revised entry for ${el.id} that keeps the mapping tied to a real, citable passage.`;
+    explanation = 'This incorporates your specific direction while still grounding the change in the underlying reference.';
+  } else {
+    const template = REFINEMENT_TEMPLATES[actionLabel] || REFINEMENT_TEMPLATES['Strengthen Evidence'];
+    const t = template(el);
+    improvement = t.improvement;
+    explanation = t.explanation;
+  }
+  const citation = opts.sourceLabel
+    ? `${opts.sourceLabel.includes('URL') ? 'Provided URL' : 'Uploaded Doc'} · p.${1 + Math.floor(Math.random() * 9)}`
+    : pickCitation(el);
+  const confidencePct = opts.sourceLabel ? 88 + Math.floor(Math.random() * 8) : 70 + Math.floor(Math.random() * 20);
+  return { improvement, explanation, confidencePct, citation };
+}
+
+/* =========================================================
+   RIGHT PANEL RENDERING
+   ========================================================= */
+function statusMeta(status) {
+  if (status === 'reviewed') return { cls: 'reviewed', label: 'Reviewed' };
+  if (status === 'pending') return { cls: 'pending', label: 'Pending Evidence' };
+  return { cls: 'review', label: 'Needs Review' };
+}
+
 function renderClaimsList() {
   claimsList.innerHTML = '';
   claimElements.forEach(el => {
+    const meta = statusMeta(el.status);
     const card = document.createElement('div');
     card.className = 'claim-card' + (el.id === currentElementId ? ' active' : '');
     card.innerHTML = `
       <div class="claim-card-top">
         <span class="claim-id">${el.id}</span>
-        <span class="status-pill ${el.status.replace('-','')}"><span class="dot"></span>${el.status}</span>
+        <span class="status-pill ${meta.cls}"><span class="dot"></span>${meta.label}</span>
       </div>
       <p class="claim-text">${escapeHtml(el.text)}</p>
       <div class="claim-card-foot"><span class="claim-ref">${escapeHtml(el.evidence)}</span></div>
     `;
-    card.onclick = () => selectClaim(el.id);
+    card.addEventListener('click', () => selectClaim(el.id));
     claimsList.appendChild(card);
   });
 }
@@ -590,63 +724,668 @@ function updateHeaderCounts() {
   progressPct.textContent = `${Math.round((reviewed / total) * 100)}% complete`;
 }
 
+/* =========================================================
+   REVIEW CARD (diagnosis) — Issue Type / Confidence / Recommended Action
+   with contextual actions based on the issue.
+   ========================================================= */
 function selectClaim(id) {
+  const el = getElement(id);
+  if (!el) return;
   currentElementId = id;
   renderClaimsList();
-  const el = claimElements.find(e => e.id === id);
-  addUserMessage(`Reviewing element ${id}`);
-  
+  addUserMessage(`Let's look at ${id}.`);
+  aiRespond(() => buildReviewCard(el), 600);
+}
+
+function buildReviewCard(el) {
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <p>Here's where <strong>${el.id}</strong> stands: "${escapeHtml(el.text)}"</p>
+    <p><span class="suggestion-label">Current evidence</span>${escapeHtml(el.evidence)}</p>
+    <p><span class="suggestion-label">Current reasoning</span>${escapeHtml(el.reasoning)}</p>
+    <p><span class="suggestion-label">Issue type</span><span class="issue-badge">${escapeHtml(el.issueType)}</span></p>
+    <p><span class="suggestion-label">Confidence</span><span class="confidence-badge ${el.confidenceLevel.toLowerCase()}">${el.confidenceLevel} · ${el.confidencePct}%</span></p>
+    <p style="margin-bottom:0"><span class="suggestion-label">Recommended action</span>${escapeHtml(el.recommendedAction)}</p>
+  `;
+  const row = document.createElement('div');
+  row.className = 'msg-actions';
+  const actions = ISSUE_ACTIONS[el.issueType] || Object.keys(REFINEMENT_TEMPLATES);
+  actions.forEach(action => {
+    const btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.textContent = action;
+    btn.addEventListener('click', () => handleContextualAction(el.id, action));
+    row.appendChild(btn);
+  });
+  wrap.appendChild(row);
+  bubble(wrap, 'ai');
+}
+
+function handleContextualAction(id, action) {
+  const el = getElement(id);
+  addUserMessage(action);
+  routeAction(el, action);
+}
+
+/* Routes a named action (from a chip, or from recognized intent) to the right flow. */
+function routeAction(el, action) {
+  if (action === 'Explain Why') { explainWhy(el); return; }
+  if (action === 'Upload Supporting Document') { requestUpload(el); return; }
+  if (action === 'Provide Product URL') { promptForProductUrl(el); return; }
+  if (!el.hasEvidence) { noEvidenceFlow(el); return; }
+  generateSuggestionFlow(el, action, null);
+}
+
+function explainWhy(el) {
   aiRespond(() => {
     const wrap = document.createElement('div');
-    wrap.innerHTML = `<p><strong>${el.id}</strong>: "${escapeHtml(el.text)}"</p>
-    <p><span class="suggestion-label">Evidence</span>${escapeHtml(el.evidence)}</p>
-    <p><span class="suggestion-label">Reasoning</span>${escapeHtml(el.reasoning)}</p>`;
-    
+    wrap.innerHTML = `<p>${escapeHtml(el.weakness)}</p><p style="margin-bottom:0">In short: ${escapeHtml(el.reasoning)}</p>`;
+    bubble(wrap, 'ai');
+    aiRespond(() => buildReviewCard(el), 700);
+  });
+}
+
+function requestUpload(el) {
+  pendingUploadElementId = el.id;
+  fileInput.click();
+}
+
+function promptForProductUrl(el) {
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Paste the product URL below and I'll take another look.</p>`;
+    const form = document.createElement('div');
+    form.className = 'inline-form';
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'https://...';
+    const submit = document.createElement('button');
+    submit.className = 'btn-apply';
+    submit.textContent = 'Submit';
+    submit.addEventListener('click', () => {
+      if (!input.value.trim()) return;
+      input.disabled = true;
+      submit.disabled = true;
+      resumeAfterDocument(el, 'product URL you provided');
+    });
+    form.append(input, submit);
+    wrap.appendChild(form);
+    bubble(wrap, 'ai');
+  });
+}
+
+/* =========================================================
+   REFINEMENT / SUGGESTION FLOW
+   ========================================================= */
+function generateSuggestionFlow(el, actionLabel, customText, opts = {}) {
+  aiRespond(() => {
+    const suggestion = buildSuggestion(el, actionLabel, customText, opts);
+    presentSuggestion(el, suggestion);
+  }, 800);
+}
+
+function presentSuggestion(el, suggestion) {
+  const level = confidenceLabel(suggestion.confidencePct);
+  const wrap = document.createElement('div');
+  wrap.innerHTML = `
+    <p><span class="suggestion-label">Suggested improvement</span>${escapeHtml(suggestion.improvement)}</p>
+    <p><span class="suggestion-label">Explanation</span>${escapeHtml(suggestion.explanation)}</p>
+    <p><span class="suggestion-label">Confidence</span><span class="confidence-badge ${level.toLowerCase()}">${level} · ${suggestion.confidencePct}%</span></p>
+    <p style="margin-bottom:0"><span class="suggestion-label">Supporting citation</span><span class="cite-chip">${escapeHtml(suggestion.citation)}</span></p>
+  `;
+
+  if (level === 'Low') {
+    const note = document.createElement('p');
+    note.className = 'low-confidence-note';
+    note.textContent = "This confidence is low — the current record may not be specific enough. Uploading more targeted supporting evidence could strengthen this.";
+    wrap.appendChild(note);
+  }
+
+  const row = document.createElement('div');
+  row.className = 'action-btn-row';
+  const applyBtn = document.createElement('button'); applyBtn.className = 'btn-apply'; applyBtn.textContent = 'Apply';
+  const editBtn = document.createElement('button'); editBtn.className = 'btn-edit'; editBtn.textContent = 'Edit';
+  const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn-reject'; rejectBtn.textContent = 'Reject';
+  row.append(applyBtn, editBtn, rejectBtn);
+
+  if (level === 'Low') {
+    const uploadBtn = document.createElement('button');
+    uploadBtn.className = 'btn-upload-inline';
+    uploadBtn.textContent = 'Upload Supporting Document';
+    uploadBtn.addEventListener('click', () => { row.querySelectorAll('button').forEach(b => b.disabled = true); requestUpload(el); });
+    row.appendChild(uploadBtn);
+  }
+
+  wrap.appendChild(row);
+
+  applyBtn.onclick = () => {
+    row.querySelectorAll('button').forEach(b => b.disabled = true);
+    applySuggestion(el, suggestion);
+  };
+  rejectBtn.onclick = () => {
+    row.querySelectorAll('button').forEach(b => b.disabled = true);
+    rejectSuggestion(el);
+  };
+  editBtn.addEventListener('click', () => enterEditMode(wrap, row, editBtn, applyBtn, rejectBtn, el, suggestion));
+
+  bubble(wrap, 'ai');
+  lastSuggestion = { elementId: el.id, ...suggestion };
+}
+
+function enterEditMode(wrap, row, editBtn, applyBtn, rejectBtn, el, suggestion) {
+  const improvementP = wrap.querySelector('p');
+  const textareaEl = document.createElement('textarea');
+  textareaEl.className = 'edit-textarea';
+  textareaEl.value = suggestion.improvement;
+  improvementP.replaceWith(textareaEl);
+
+  editBtn.disabled = true;
+  applyBtn.textContent = 'Save & Apply';
+  rejectBtn.textContent = 'Cancel';
+
+  applyBtn.onclick = () => {
+    row.querySelectorAll('button').forEach(b => b.disabled = true);
+    textareaEl.disabled = true;
+    const edited = { ...suggestion, improvement: textareaEl.value.trim() || suggestion.improvement };
+    applySuggestion(el, edited);
+  };
+  rejectBtn.onclick = () => {
+    row.querySelectorAll('button').forEach(b => b.disabled = true);
+    textareaEl.disabled = true;
+    aiRespond(() => {
+      const note = document.createElement('div');
+      note.innerHTML = `<p>No problem — here's the original suggestion again:</p>`;
+      bubble(note, 'ai');
+      presentSuggestion(el, suggestion);
+    }, 400);
+  };
+}
+
+function applySuggestion(el, suggestion) {
+  historyStack.push({ elementId: el.id, snapshot: { status: el.status, evidence: el.evidence, reasoning: el.reasoning } });
+  el.status = 'reviewed';
+  el.evidence = suggestion.citation;
+  el.reasoning = suggestion.improvement;
+  renderClaimsList();
+  updateHeaderCounts();
+
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Claim Element updated successfully.</p>`;
+    bubble(wrap, 'ai').classList.add('confirmation');
+    aiRespond(() => buildRecommendNext(el.id), 900);
+  }, 500);
+}
+
+function rejectSuggestion(el) {
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>No problem — I won't apply that change. Want me to try a different approach for <strong>${el.id}</strong>, or tell me what to focus on instead?</p>`;
     const row = document.createElement('div');
-    row.className = 'action-btn-row';
-    const applyBtn = document.createElement('button');
-    applyBtn.className = 'btn-apply';
-    applyBtn.textContent = 'Approve Mapping';
-    applyBtn.onclick = () => {
-      el.status = 'reviewed';
-      renderClaimsList();
-      updateHeaderCounts();
-      addUserMessage(`Approved ${el.id}`);
-      aiRespond(() => {
-        const confirm = document.createElement('div');
-        confirm.innerHTML = `<p>✓ Updated status of ${el.id} to <strong>Reviewed</strong>.</p>`;
-        bubble(confirm, 'ai');
-      });
-    };
-    row.appendChild(applyBtn);
+    row.className = 'msg-actions';
+    const actions = ISSUE_ACTIONS[el.issueType] || Object.keys(REFINEMENT_TEMPLATES);
+    actions.forEach(action => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn';
+      btn.textContent = action;
+      btn.addEventListener('click', () => handleContextualAction(el.id, action));
+      row.appendChild(btn);
+    });
     wrap.appendChild(row);
     bubble(wrap, 'ai');
   });
 }
 
-/* CHAT MESSAGING */
-function handleSend() {
-  const val = textarea.value.trim();
-  if (!val) return;
-  textarea.value = '';
-  addUserMessage(val);
-  
+function buildRecommendNext(excludeId) {
+  const next = claimElements.find(e => e.status === 'needs-review' && e.id !== excludeId);
+  const wrap = document.createElement('div');
+  if (next) {
+    wrap.innerHTML = `<p>Nice work. I'd recommend reviewing <strong>${next.id}</strong> next — "${escapeHtml(next.text)}"</p>`;
+    const row = document.createElement('div');
+    row.className = 'msg-actions';
+    const btn = document.createElement('button');
+    btn.className = 'chip-btn';
+    btn.textContent = `Review ${next.id}`;
+    btn.addEventListener('click', () => selectClaim(next.id));
+    row.appendChild(btn);
+    wrap.appendChild(row);
+  } else {
+    wrap.innerHTML = `<p>All flagged claim elements have been addressed. Nice work — feel free to revisit any element from the panel.</p>`;
+  }
+  bubble(wrap, 'ai');
+}
+
+/* =========================================================
+   NO-EVIDENCE FLOW
+   ========================================================= */
+function noEvidenceFlow(el) {
+  el.status = 'pending';
+  pausedElementId = el.id;
+  renderClaimsList();
+  updateHeaderCounts();
+
   aiRespond(() => {
     const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Understood. I will process: "<em>${escapeHtml(val)}</em>"</p>`;
+    wrap.innerHTML = `<p>I couldn't find sufficient supporting evidence for <strong>${el.id}</strong>. I don't want to guess or cite something that isn't actually there.</p>`;
+    const row = document.createElement('div');
+    row.className = 'msg-actions';
+    ['Upload Technical Documentation', 'Provide Product URL', 'Retry Search'].forEach(label => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn';
+      btn.textContent = label;
+      btn.addEventListener('click', () => handleNoEvidenceOption(el, label));
+      row.appendChild(btn);
+    });
+    wrap.appendChild(row);
     bubble(wrap, 'ai');
   });
 }
 
-sendBtn.onclick = handleSend;
-textarea.onkeydown = (e) => {
+function handleNoEvidenceOption(el, label) {
+  addUserMessage(label);
+  if (label === 'Retry Search') {
+    aiRespond(() => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<p>Searching the record again for <strong>${el.id}</strong>…</p>`;
+      bubble(wrap, 'ai');
+      aiRespond(() => noEvidenceFlow(el), 900);
+    }, 500);
+    return;
+  }
+  if (label === 'Upload Technical Documentation') { requestUpload(el); return; }
+  if (label === 'Provide Product URL') { promptForProductUrl(el); return; }
+}
+
+fileInput.addEventListener('change', () => {
+  const hasFile = fileInput.files.length > 0;
+  fileInput.value = '';
+  if (!hasFile) return;
+
+  if (pendingUploadElementId) {
+    const el = getElement(pendingUploadElementId);
+    pendingUploadElementId = null;
+    resumeAfterDocument(el, 'technical documentation you uploaded');
+    return;
+  }
+
+  // Generic mid-conversation upload with no specific element targeted.
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Thanks — I've added that document to the case file. Select a claim element from the panel, or tell me which one it supports.</p>`;
+    bubble(wrap, 'ai');
+  });
+});
+
+function resumeAfterDocument(el, sourceLabel) {
+  el.hasEvidence = true;
+  if (pausedElementId === el.id) pausedElementId = null;
+  currentElementId = el.id;
+  renderClaimsList();
+
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Thanks — I've reviewed the ${escapeHtml(sourceLabel)}. That gives me what I need to continue with <strong>${el.id}</strong>.</p>`;
+    bubble(wrap, 'ai');
+    aiRespond(() => {
+      const suggestion = buildSuggestion(el, 'Find Missing Mapping', null, { sourceLabel });
+      presentSuggestion(el, suggestion);
+    }, 900);
+  }, 500);
+}
+
+attachBtn.addEventListener('click', () => {
+  pendingUploadElementId = currentElementId || pausedElementId || null;
+  fileInput.click();
+});
+
+/* =========================================================
+   UNDO / SKIP / RESUME
+   ========================================================= */
+function undoLast() {
+  if (historyStack.length === 0) {
+    aiRespond(() => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<p>There's no previous refinement to undo yet.</p>`;
+      bubble(wrap, 'ai');
+    });
+    return;
+  }
+  const last = historyStack.pop();
+  const el = getElement(last.elementId);
+  Object.assign(el, last.snapshot);
+  currentElementId = el.id;
+  renderClaimsList();
+  updateHeaderCounts();
+
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Reverted <strong>${el.id}</strong> to its previous version.</p>`;
+    bubble(wrap, 'ai');
+    aiRespond(() => buildReviewCard(el), 800);
+  }, 500);
+}
+
+function skipCurrent() {
+  if (!currentElementId) {
+    aiRespond(() => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<p>Select a claim element first, and I can pause it for you.</p>`;
+      bubble(wrap, 'ai');
+    });
+    return;
+  }
+  const el = getElement(currentElementId);
+  el.status = 'pending';
+  pausedElementId = el.id;
+  const exclude = el.id;
+  currentElementId = null;
+  renderClaimsList();
+  updateHeaderCounts();
+
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Got it — I've marked <strong>${el.id}</strong> as Pending Evidence. We can come back to it anytime.</p>`;
+    bubble(wrap, 'ai');
+    aiRespond(() => buildRecommendNext(exclude), 900);
+  }, 500);
+}
+
+function resumePendingClaim() {
+  if (!pausedElementId) {
+    aiRespond(() => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<p>There's no paused claim element right now. Choose one from the panel whenever you're ready.</p>`;
+      bubble(wrap, 'ai');
+    });
+    return;
+  }
+  const id = pausedElementId;
+  selectClaim(id);
+}
+
+/* =========================================================
+   WRONG EVIDENCE
+   ========================================================= */
+function wrongEvidenceFlow() {
+  if (!lastSuggestion || lastSuggestion.elementId !== currentElementId) {
+    aiRespond(() => {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<p>Could you select the claim element you're referring to? I'll take another look at the evidence once I know which one.</p>`;
+      bubble(wrap, 'ai');
+    });
+    return;
+  }
+  const el = getElement(currentElementId);
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>You're right, and I apologize for the error. Let me search again.</p>`;
+    bubble(wrap, 'ai');
+    aiRespond(() => {
+      const suggestion = buildSuggestion(el, 'Strengthen Evidence', null);
+      presentSuggestion(el, suggestion);
+    }, 900);
+  }, 500);
+}
+
+/* =========================================================
+   INTENT RECOGNITION LAYER
+   Classifies free-text input before any refinement is
+   generated. Ambiguous input triggers a clarifying question
+   instead of a guessed refinement.
+   ========================================================= */
+function recognizeIntent(text) {
+  const t = text.toLowerCase().trim();
+
+  if (/\bundo\b/.test(t)) return 'undo';
+  if (/skip for now/.test(t)) return 'skip';
+  if (/\bresume\b|pick .*back up|go back to (the )?(pending|that)|continue (with|on) (the )?pending/.test(t)) return 'resume_pending';
+
+  if (/\b(wrong|incorrect|inaccurate|misquoted|mis-?cited|bad citation|not accurate)\b/.test(t) &&
+      /(evidence|citation|reference|source|passage)?/.test(t)) return 'correct_wrong_evidence';
+
+  if (/^(apply|accept|approve|use it|use this|go ahead|looks good|sounds good|do it|confirm|yes,? apply)\b/.test(t)) return 'apply_suggestion';
+  if (/^(reject|no,? (thanks|don'?t)|discard|don'?t apply|not this one)\b/.test(t)) return 'reject_suggestion';
+
+  if (/stronger evidence|more (evidence|support)|better (citation|source|evidence|reference)|different (source|reference|passage)/.test(t)) return 'request_stronger_evidence';
+  if (/reasoning|explanation for|argument|logic/.test(t)) return 'improve_reasoning';
+  if (/legal language|wording|phrasing|rewrite (the )?claim|claim language/.test(t)) return 'rewrite_legal_language';
+
+  if (/\?\s*$|^(what|why|how|when|who|which|does|is|are|can you explain)\b/.test(t)) return 'ask_question';
+
+  const vague = /(not good|isn'?t good|not great|not right|doesn'?t work|not enough|not sufficient|^weak$|unclear|confusing|needs? work|make it better|fix (it|this)|improve it|no good)/;
+  if (vague.test(t)) return 'ambiguous';
+
+  if (t.split(/\s+/).length >= 4) return 'custom_refinement';
+
+  return 'ambiguous';
+}
+
+function askClarifyingQuestion() {
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>I'd be happy to revise it. Could you clarify what you'd like to improve?</p>`;
+    const row = document.createElement('div');
+    row.className = 'msg-actions';
+    CLARIFY_OPTIONS.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'chip-btn';
+      btn.textContent = opt.label;
+      btn.addEventListener('click', () => {
+        addUserMessage(opt.label);
+        if (!currentElementId) {
+          aiRespond(() => {
+            const w = document.createElement('div');
+            w.innerHTML = `<p>Choose a claim element from the panel first, and I'll apply that direction to it.</p>`;
+            bubble(w, 'ai');
+          });
+          return;
+        }
+        const el = getElement(currentElementId);
+        if (opt.action) {
+          routeAction(el, opt.action);
+        } else {
+          aiRespond(() => {
+            const w = document.createElement('div');
+            w.innerHTML = `<p>No problem — tell me specifically what you'd like changed, and I'll take it from there.</p>`;
+            bubble(w, 'ai');
+          });
+        }
+      });
+      row.appendChild(btn);
+    });
+    wrap.appendChild(row);
+    bubble(wrap, 'ai');
+  });
+}
+
+function answerQuestion() {
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    if (currentElementId) {
+      const el = getElement(currentElementId);
+      wrap.innerHTML = `<p>For <strong>${el.id}</strong>, the chart currently relies on ${escapeHtml(el.evidence)}, with this reasoning: ${escapeHtml(el.reasoning)}</p><p style="margin-bottom:0">Let me know if you'd like me to strengthen the evidence, improve the reasoning, or rewrite the legal language.</p>`;
+    } else {
+      wrap.innerHTML = `<p>I can walk you through the evidence and reasoning behind any claim element — pick one from the panel on the right, or ask me about a specific element.</p>`;
+    }
+    bubble(wrap, 'ai');
+  });
+}
+
+/* =========================================================
+   USER INPUT DISPATCH
+   Every typed message goes through intent recognition
+   before any refinement is generated.
+   ========================================================= */
+function handleUserSubmit(rawText) {
+  const text = rawText.trim();
+  if (!text) return;
+  addUserMessage(text);
+
+  const intent = recognizeIntent(text);
+
+  switch (intent) {
+    case 'undo': undoLast(); return;
+    case 'skip': skipCurrent(); return;
+    case 'resume_pending': resumePendingClaim(); return;
+    case 'correct_wrong_evidence': wrongEvidenceFlow(); return;
+    case 'ask_question': answerQuestion(); return;
+    case 'ambiguous': askClarifyingQuestion(); return;
+
+    case 'apply_suggestion': {
+      if (lastSuggestion && lastSuggestion.elementId === currentElementId) {
+        applySuggestion(getElement(currentElementId), lastSuggestion);
+      } else {
+        aiRespond(() => {
+          const w = document.createElement('div');
+          w.innerHTML = `<p>There's nothing pending to apply right now. Choose a claim element and I'll bring up a suggestion first.</p>`;
+          bubble(w, 'ai');
+        });
+      }
+      return;
+    }
+    case 'reject_suggestion': {
+      if (lastSuggestion && lastSuggestion.elementId === currentElementId) {
+        rejectSuggestion(getElement(currentElementId));
+      } else {
+        aiRespond(() => {
+          const w = document.createElement('div');
+          w.innerHTML = `<p>There's nothing pending to reject at the moment.</p>`;
+          bubble(w, 'ai');
+        });
+      }
+      return;
+    }
+
+    case 'request_stronger_evidence':
+    case 'improve_reasoning':
+    case 'rewrite_legal_language': {
+      const actionMap = { request_stronger_evidence: 'Strengthen Evidence', improve_reasoning: 'Improve Reasoning', rewrite_legal_language: 'Rewrite Legal Language' };
+      if (!currentElementId) {
+        aiRespond(() => {
+          const w = document.createElement('div');
+          w.innerHTML = `<p>Choose a claim element from the panel on the right, and I'll apply that.</p>`;
+          bubble(w, 'ai');
+        });
+        return;
+      }
+      routeAction(getElement(currentElementId), actionMap[intent]);
+      return;
+    }
+
+    case 'custom_refinement':
+    default: {
+      if (!currentElementId) {
+        aiRespond(() => {
+          const w = document.createElement('div');
+          w.innerHTML = `<p>Choose a claim element from the panel on the right, and I'll walk you through it.</p>`;
+          bubble(w, 'ai');
+        });
+        return;
+      }
+      const el = getElement(currentElementId);
+      if (!el.hasEvidence) { noEvidenceFlow(el); return; }
+      generateSuggestionFlow(el, null, text);
+      return;
+    }
+  }
+}
+
+sendBtn.addEventListener('click', () => {
+  handleUserSubmit(textarea.value);
+  textarea.value = '';
+  textarea.style.height = 'auto';
+});
+textarea.addEventListener('keydown', (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
-    handleSend();
+    handleUserSubmit(textarea.value);
+    textarea.value = '';
+    textarea.style.height = 'auto';
   }
-};
+});
+textarea.addEventListener('input', () => {
+  textarea.style.height = 'auto';
+  textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
+});
 
-attachBtn.onclick = () => hiddenFileInput.click();
+/* =========================================================
+   TOP NAV DROPDOWN
+   ========================================================= */
+const dropdown = document.getElementById('artifactsDropdown');
+const trigger = document.getElementById('artifactsTrigger');
+trigger.addEventListener('click', (e) => { e.stopPropagation(); dropdown.classList.toggle('open'); });
+document.addEventListener('click', (e) => { if (!dropdown.contains(e.target)) dropdown.classList.remove('open'); });
+
+/* =========================================================
+   SCREEN 1: UPLOAD FLOW
+   ========================================================= */
+const uploadScreen = document.getElementById('uploadScreen');
+const appRoot = document.getElementById('appRoot');
+
+const claimChartDrop = document.getElementById('claimChartDrop');
+const claimChartInput = document.getElementById('claimChartInput');
+const claimChartFileName = document.getElementById('claimChartFileName');
+const supportDocsDrop = document.getElementById('supportDocsDrop');
+const supportDocsInput = document.getElementById('supportDocsInput');
+const supportDocsFileName = document.getElementById('supportDocsFileName');
+const analyzeBtn = document.getElementById('analyzeBtn');
+const sampleBtn = document.getElementById('sampleBtn');
+
+function wireDropzone(zone, input, onFiles) {
+  zone.addEventListener('click', () => input.click());
+  zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag'); });
+  zone.addEventListener('dragleave', () => zone.classList.remove('drag'));
+  zone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    zone.classList.remove('drag');
+    if (e.dataTransfer.files.length) onFiles(e.dataTransfer.files);
+  });
+  input.addEventListener('change', () => { if (input.files.length) onFiles(input.files); });
+}
+
+wireDropzone(claimChartDrop, claimChartInput, (files) => {
+  claimChartFileName.textContent = files[0].name;
+  analyzeBtn.disabled = false;
+});
+
+wireDropzone(supportDocsDrop, supportDocsInput, (files) => {
+  supportDocsCount = files.length;
+  const names = Array.from(files).map(f => f.name).join(', ');
+  supportDocsFileName.innerHTML = `${escapeHtml(names)} <span>(${files.length})</span>`;
+});
+
+analyzeBtn.addEventListener('click', startSession);
+sampleBtn.addEventListener('click', () => {
+  supportDocsCount = supportDocsCount || 2;
+  startSession();
+});
+
+function startSession() {
+  uploadScreen.style.display = 'none';
+  appRoot.style.display = 'flex';
+  init();
+}
+
+/* =========================================================
+   INIT (called once the workspace screen opens)
+   ========================================================= */
+function init() {
+  renderClaimsList();
+  updateHeaderCounts();
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    let html = `
+      <p>I've analyzed your claim chart.</p>
+      <p>I found <strong>${initialOpportunityCount} review opportunities</strong>.</p>
+    `;
+    if (supportDocsCount > 0) {
+      html += `<p>I've also indexed the ${supportDocsCount} supporting document${supportDocsCount === 1 ? '' : 's'} you added.</p>`;
+    }
+    html += `<p style="margin-bottom:0">Choose a claim element to begin.</p>`;
+    wrap.innerHTML = html;
+    bubble(wrap, 'ai');
+  }, 700);
+}
 </script>
 </body>
 </html>
