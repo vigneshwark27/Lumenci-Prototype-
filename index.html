@@ -226,8 +226,6 @@
   .confidence-badge.medium { background: var(--status-review-bg); color: var(--status-review-fg); }
   .confidence-badge.low { background: var(--status-low-bg); color: var(--status-low-fg); }
 
-  .low-confidence-note { color: var(--status-low-fg); font-size: 13px; margin: 8px 0 0; }
-
   .msg-actions { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
   .chip-btn {
     background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary); font-size: 12.5px;
@@ -243,20 +241,6 @@
   .btn-edit:hover { border-color: var(--accent); color: var(--accent); }
   .btn-reject { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; font-size: 13px; }
   .btn-reject:hover { border-color: var(--border-strong); color: var(--text-primary); }
-  .btn-upload-inline { background: var(--surface); border: 1px dashed var(--border-strong); color: var(--text-secondary); padding: 7px 14px; border-radius: 8px; font-size: 13px; }
-  .btn-upload-inline:hover { border-color: var(--accent); color: var(--accent); }
-  .action-btn-row button:disabled { opacity: 0.4; cursor: default; }
-
-  .inline-form { display: flex; gap: 8px; margin-top: 10px; }
-  .inline-form input {
-    flex: 1; padding: 8px 11px; border: 1px solid var(--border-strong); border-radius: 8px; font-size: 13px; font-family: var(--font-ui);
-  }
-  .inline-form input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-
-  .edit-textarea {
-    width: 100%; font-family: var(--font-ui); font-size: 14px; line-height: 1.5; padding: 8px 10px;
-    border: 1px solid var(--border-strong); border-radius: 8px; resize: vertical; min-height: 60px; margin-bottom: 8px;
-  }
 
   .typing-dots {
     display: flex; gap: 4px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
@@ -298,9 +282,8 @@
   .input-hint { display: flex; justify-content: space-between; margin-top: 8px; font-size: 11.5px; color: var(--text-tertiary); padding: 0 4px; }
   .input-hint kbd { font-family: var(--font-mono); background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 1px 5px; font-size: 10.5px; }
 
-  /* ============ CLAIM ELEMENTS PANEL ============ */
+  /* ============ CLAIMS PANEL ============ */
   .claims-panel { flex: 0 0 30%; max-width: 30%; display: flex; flex-direction: column; background: var(--surface-raised); min-height: 0; }
-
   .claims-header { padding: 16px 20px 12px; border-bottom: 1px solid var(--border); display: flex; align-items: baseline; justify-content: space-between; }
   .claims-header h2 { margin: 0; font-size: 14.5px; font-weight: 600; letter-spacing: -0.01em; }
   .claims-header .claim-scope { display: block; font-size: 11.5px; color: var(--text-tertiary); font-weight: 500; margin-top: 2px; font-family: var(--font-mono); }
@@ -344,24 +327,16 @@
   .progress-label { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-secondary); }
   .progress-label strong { color: var(--text-primary); font-weight: 600; }
 
-  .chat-scroll::-webkit-scrollbar, .claims-list::-webkit-scrollbar { width: 8px; }
-  .chat-scroll::-webkit-scrollbar-thumb, .claims-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 8px; }
-  .chat-scroll::-webkit-scrollbar-track, .claims-list::-webkit-scrollbar-track { background: transparent; }
-
   @media (max-width: 920px) {
     .workspace { flex-direction: column; }
     .chat-panel, .claims-panel { flex: 1 1 auto; max-width: 100%; }
     .claims-panel { border-top: 1px solid var(--border); max-height: 40vh; }
-    .app-name-sub { display: none; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
   }
 </style>
 </head>
 <body>
 
-<!-- ============ SCREEN 1: UPLOAD ============ -->
+<!-- ============ UPLOAD SCREEN ============ -->
 <div class="upload-screen" id="uploadScreen">
   <div class="upload-card">
     <div class="upload-card-header">
@@ -389,9 +364,8 @@
   </div>
 </div>
 
-<!-- ============ SCREEN 2: WORKSPACE ============ -->
+<!-- ============ WORKSPACE APP ============ -->
 <div class="app" id="appRoot">
-
   <header class="topnav">
     <div class="topnav-left">
       <div class="logo-mark">L</div>
@@ -410,26 +384,13 @@
             <div class="artifact-icon">CC</div>
             <div class="dropdown-item-text"><span class="dropdown-item-title">Claim 1 — Chart v3</span><span class="dropdown-item-meta">Updated 12 min ago</span></div>
           </div>
-          <div class="dropdown-item">
-            <div class="artifact-icon">CC</div>
-            <div class="dropdown-item-text"><span class="dropdown-item-title">Claim 1 — Chart v2</span><span class="dropdown-item-meta">Updated yesterday</span></div>
-          </div>
-          <div class="dropdown-menu-label">Reference Mappings</div>
-          <div class="dropdown-item">
-            <div class="artifact-icon">RM</div>
-            <div class="dropdown-item-text"><span class="dropdown-item-title">Reference A — Element Map</span><span class="dropdown-item-meta">Updated 3 days ago</span></div>
-          </div>
         </div>
       </div>
-      <button class="btn-export">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1.5V9.5M7 9.5L4.2 6.7M7 9.5L9.8 6.7M2 10.5V11.5C2 11.7761 2.22386 12 2.5 12H11.5C11.7761 12 12 11.7761 12 11.5V10.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Export
-      </button>
+      <button class="btn-export">Export</button>
     </div>
   </header>
 
   <main class="workspace">
-
     <section class="chat-panel">
       <div class="chat-topbar">
         <span>US 10,982,417 B2</span>
@@ -450,8 +411,8 @@
           </button>
         </div>
         <div class="input-hint">
-          <span>AI suggestions require attorney review before filing.</span>
-          <span><kbd>Enter</kbd> to send · <kbd>Shift+Enter</kbd> for new line</span>
+          <span>AI suggestions require attorney review.</span>
+          <span><kbd>Enter</kbd> to send</span>
         </div>
       </div>
     </section>
@@ -481,7 +442,6 @@
         </div>
       </div>
     </aside>
-
   </main>
 </div>
 
@@ -492,103 +452,18 @@
    DATA MODEL
    ========================================================= */
 const claimElements = [
-  { id:'1.a', text:'A processor configured to receive a data stream from a plurality of sensor nodes;',
-    status:'reviewed', evidence:'Ref A · ¶0028', hasEvidence:true,
-    reasoning:'Reference A explicitly discloses a processor receiving sensor data over a network interface, directly matching this limitation.',
-    weakness:'This element has already been reviewed and is well supported. You can still ask me to refine it further.',
-    issueType:'Well Supported', confidenceLevel:'High', confidencePct:94,
-    recommendedAction:'No action needed — the mapping is well supported.' },
-
-  { id:'1.b', text:'wherein the processor is further configured to buffer the data stream in a memory prior to transmission;',
-    status:'needs-review', evidence:'Ref A · ¶0041', hasEvidence:true,
-    reasoning:"The chart cites Reference A's description of a buffer used before transmission, but the write-up mostly paraphrases the passage.",
-    weakness:'The reasoning summarizes the passage instead of tying each claim term to the disclosure directly, which weakens the mapping.',
-    issueType:'Weak Reasoning', confidenceLevel:'Medium', confidencePct:68,
-    recommendedAction:'Rewrite the reasoning to tie each claim term to the disclosure.' },
-
-  { id:'1.c', text:'and dynamically adjusting a buffer size based on a measured network latency;',
-    status:'needs-review', evidence:'Ref B · ¶0052', hasEvidence:true,
-    reasoning:'Reference B describes a controller that adjusts buffer size, cited as support for the dynamic-adjustment limitation.',
-    weakness:'The citation is close, but it hasn\u2019t been checked against the exact "based on a measured network latency" language in the claim.',
-    issueType:'Unconfirmed Evidence', confidenceLevel:'Medium', confidencePct:71,
-    recommendedAction:'Confirm the passage covers the exact latency language, or find one that does.' },
-
-  { id:'1.d', text:'a transmitter coupled to the processor and configured to transmit the buffered data stream;',
-    status:'reviewed', evidence:'Ref A · ¶0033', hasEvidence:true,
-    reasoning:'Reference A discloses a transmitter coupled to the processor that sends the buffered stream, matching this limitation directly.',
-    weakness:'Already reviewed and well supported.',
-    issueType:'Well Supported', confidenceLevel:'High', confidencePct:92,
-    recommendedAction:'No action needed — the mapping is well supported.' },
-
-  { id:'1.e', text:'wherein the transmitter selects a transmission protocol based on the measured network latency; and',
-    status:'needs-review', evidence:'Unassigned', hasEvidence:false,
-    reasoning:'No passage has been mapped to this limitation yet.',
-    weakness:'Without a mapped citation, this element can\u2019t be charted with confidence.',
-    issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:22,
-    recommendedAction:'Locate and map a supporting passage before charting this element.' },
-
-  { id:'1.f', text:'a feedback loop configured to report transmission status back to the plurality of sensor nodes.',
-    status:'pending', evidence:'Ref C · —', hasEvidence:true,
-    reasoning:'Reference C was flagged as a possible match for the feedback-loop limitation, but the specific paragraph hasn\u2019t been confirmed.',
-    weakness:'Marked pending until a specific supporting passage is confirmed.',
-    issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:35,
-    recommendedAction:'Confirm which paragraph of Reference C supports the feedback loop.' },
-
-  { id:'2.a', text:'The system of claim 1, wherein the plurality of sensor nodes comprises at least one temperature sensor;',
-    status:'needs-review', evidence:'Ref A · ¶0019', hasEvidence:true,
-    reasoning:'Reference A mentions a temperature sensor among the sensor nodes, cited as support for this dependent claim.',
-    weakness:'The citation identifies a temperature sensor generically, but doesn\u2019t confirm it belongs to "the plurality of sensor nodes" from claim 1.',
-    issueType:'Weak Evidence', confidenceLevel:'Medium', confidencePct:64,
-    recommendedAction:'Cite a passage tying the sensor to "the plurality of sensor nodes" specifically.' },
+  { id:'1.a', text:'A processor configured to receive a data stream from a plurality of sensor nodes;', status:'reviewed', evidence:'Ref A · ¶0028', reasoning:'Explicitly discloses processor receiving sensor data.', issueType:'Well Supported', confidenceLevel:'High', confidencePct:94 },
+  { id:'1.b', text:'wherein the processor is further configured to buffer the data stream in a memory prior to transmission;', status:'needs-review', evidence:'Ref A · ¶0041', reasoning:'Summarizes buffer passage rather than direct term mapping.', issueType:'Weak Reasoning', confidenceLevel:'Medium', confidencePct:68 },
+  { id:'1.c', text:'and dynamically adjusting a buffer size based on a measured network latency;', status:'needs-review', evidence:'Ref B · ¶0052', reasoning:'Adjusts buffer size, needs latency term verification.', issueType:'Unconfirmed Evidence', confidenceLevel:'Medium', confidencePct:71 },
+  { id:'1.d', text:'a transmitter coupled to the processor and configured to transmit the buffered data stream;', status:'reviewed', evidence:'Ref A · ¶0033', reasoning:'Discloses transmitter sending buffered stream.', issueType:'Well Supported', confidenceLevel:'High', confidencePct:92 },
+  { id:'1.e', text:'wherein the transmitter selects a transmission protocol based on the measured network latency; and', status:'needs-review', evidence:'Unassigned', reasoning:'No passage mapped yet.', issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:22 },
+  { id:'1.f', text:'a feedback loop configured to report transmission status back to the plurality of sensor nodes.', status:'pending', evidence:'Ref C · —', reasoning:'Feedback loop matched without exact paragraph.', issueType:'Missing Mapping', confidenceLevel:'Low', confidencePct:35 },
+  { id:'2.a', text:'The system of claim 1, wherein the plurality of sensor nodes comprises at least one temperature sensor;', status:'needs-review', evidence:'Ref A · ¶0019', reasoning:'Mentions temp sensor generally.', issueType:'Weak Evidence', confidenceLevel:'Medium', confidencePct:64 }
 ];
 
-const ISSUE_ACTIONS = {
-  'Weak Evidence':        ['Strengthen Evidence', 'Explain Why', 'Upload Supporting Document'],
-  'Weak Reasoning':       ['Improve Reasoning', 'Explain Why', 'Rewrite Legal Language'],
-  'Unconfirmed Evidence': ['Strengthen Evidence', 'Explain Why', 'Upload Supporting Document'],
-  'Missing Mapping':      ['Find Missing Mapping', 'Upload Supporting Document', 'Provide Product URL'],
-  'Well Supported':       ['Rewrite Legal Language', 'Explain Why'],
-};
-
-const REFINEMENT_TEMPLATES = {
-  'Strengthen Evidence': (el) => ({
-    improvement: `Replace the current citation for ${el.id} with a passage that explicitly recites the missing language, rather than one that only implies it.`,
-    explanation: 'A passage using matching terminology supports a stronger reads-on argument than one requiring inference.',
-  }),
-  'Improve Reasoning': (el) => ({
-    improvement: `Rewrite the reasoning for ${el.id} to walk through each claim term and tie it explicitly to the corresponding disclosure, instead of summarizing the passage.`,
-    explanation: 'Element-by-element reasoning is harder to dispute during prosecution or litigation than a general paraphrase.',
-  }),
-  'Find Missing Mapping': (el) => ({
-    improvement: `Map ${el.id} to a newly identified passage that covers the portion of the claim language currently left unmapped.`,
-    explanation: 'This passage was not previously considered and closes the gap in the existing chart.',
-  }),
-  'Rewrite Legal Language': (el) => ({
-    improvement: `Reword the claim chart entry for ${el.id} to mirror the claim's exact terminology, avoiding paraphrase that could weaken the mapping.`,
-    explanation: "Charts that track claim language word-for-word are more persuasive and easier to defend.",
-  }),
-};
-
-const CLARIFY_OPTIONS = [
-  { label: 'Stronger evidence', action: 'Strengthen Evidence' },
-  { label: 'Better reasoning', action: 'Improve Reasoning' },
-  { label: 'Different supporting source', action: 'Find Missing Mapping' },
-  { label: 'Rewrite legal language', action: 'Rewrite Legal Language' },
-  { label: 'Other', action: null },
-];
-
-/* =========================================================
-   STATE
-   ========================================================= */
 let currentElementId = null;
-let pausedElementId = null;
-let pendingUploadElementId = null;
-let lastSuggestion = null;
-const historyStack = [];
 
-/* =========================================================
-   DOM REFS
-   ========================================================= */
+/* DOM ELEMENTS */
 const uploadScreen = document.getElementById('uploadScreen');
 const appRoot = document.getElementById('appRoot');
 const claimChartDrop = document.getElementById('claimChartDrop');
@@ -609,26 +484,50 @@ const progressPct = document.getElementById('progressPct');
 const textarea = document.getElementById('chatTextarea');
 const sendBtn = document.getElementById('sendBtn');
 const attachBtn = document.getElementById('attachBtn');
-const fileInput = document.getElementById('hiddenFileInput');
+const hiddenFileInput = document.getElementById('hiddenFileInput');
 
-/* =========================================================
-   HELPERS
-   ========================================================= */
-function getElement(id) { return claimElements.find(e => e.id === id); }
+/* UPLOAD HANDLERS */
+claimChartDrop.onclick = () => claimChartInput.click();
+supportDocsDrop.onclick = () => supportDocsInput.click();
 
+claimChartInput.onchange = (e) => {
+  if (e.target.files.length > 0) {
+    claimChartFileName.textContent = e.target.files[0].name;
+    analyzeBtn.disabled = false;
+  }
+};
+
+supportDocsInput.onchange = (e) => {
+  if (e.target.files.length > 0) {
+    supportDocsFileName.innerHTML = `${e.target.files.length} document(s) selected`;
+  }
+};
+
+function launchApp() {
+  uploadScreen.style.display = 'none';
+  appRoot.style.display = 'flex';
+  renderClaimsList();
+  updateHeaderCounts();
+  
+  addUserMessage("Session initialized.");
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Welcome to Lumenci AI Studio! I have mapped <strong>7 claim elements</strong> for US 10,982,417 B2.</p><p>Select any item on the right panel to begin.</p>`;
+    bubble(wrap, 'ai');
+  }, 300);
+}
+
+analyzeBtn.onclick = launchApp;
+sampleBtn.onclick = launchApp;
+
+/* UTILITIES */
 function escapeHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
 }
 
-function confidenceLabel(pct) {
-  if (pct >= 85) return 'High';
-  if (pct >= 65) return 'Medium';
-  return 'Low';
-}
-
-function bubble(contentNode, role) {
+function bubble(node, role) {
   const row = document.createElement('div');
   row.className = 'msg-row ' + role;
   const avatar = document.createElement('div');
@@ -636,7 +535,7 @@ function bubble(contentNode, role) {
   avatar.textContent = role === 'ai' ? 'AI' : 'You';
   const bub = document.createElement('div');
   bub.className = 'msg-bubble';
-  bub.appendChild(contentNode);
+  bub.appendChild(node);
   row.appendChild(avatar);
   row.appendChild(bub);
   chatScroll.appendChild(row);
@@ -650,129 +549,34 @@ function addUserMessage(text) {
   bubble(wrap, 'user');
 }
 
-function showTyping() {
-  const row = document.createElement('div');
-  row.className = 'msg-row ai';
-  row.innerHTML = `<div class="avatar ai">AI</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
-  chatScroll.appendChild(row);
+function aiRespond(fn, delay = 500) {
+  const typing = document.createElement('div');
+  typing.className = 'msg-row ai';
+  typing.innerHTML = `<div class="avatar ai">AI</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  chatScroll.appendChild(typing);
   chatScroll.scrollTop = chatScroll.scrollHeight;
-  return row;
-}
 
-function aiRespond(buildFn, delay = 700) {
-  const typingRow = showTyping();
   setTimeout(() => {
-    typingRow.remove();
-    buildFn();
+    typing.remove();
+    fn();
   }, delay);
 }
 
-function pickCitation(el) {
-  const base = el.evidence && el.evidence.startsWith('Ref') ? el.evidence.split('·')[0].trim() : ['Ref A', 'Ref B', 'Ref C'][Math.floor(Math.random() * 3)];
-  const para = '¶0' + (20 + Math.floor(Math.random() * 70));
-  return `${base} · ${para}`;
-}
-
-function buildSuggestion(el, actionLabel, customText, opts = {}) {
-  let improvement, explanation;
-  if (customText) {
-    improvement = `Based on your note ("${customText}"), here's a revised entry for ${el.id} that keeps the mapping tied to a real, citable passage.`;
-    explanation = 'This incorporates your specific direction while still grounding the change in the underlying reference.';
-  } else {
-    const template = REFINEMENT_TEMPLATES[actionLabel] || REFINEMENT_TEMPLATES['Strengthen Evidence'];
-    const t = template(el);
-    improvement = t.improvement;
-    explanation = t.explanation;
-  }
-  const citation = opts.sourceLabel
-    ? `${opts.sourceLabel.includes('URL') ? 'Provided URL' : 'Uploaded Doc'} · p.${1 + Math.floor(Math.random() * 9)}`
-    : pickCitation(el);
-  const confidencePct = opts.sourceLabel ? 88 + Math.floor(Math.random() * 8) : 70 + Math.floor(Math.random() * 20);
-  return { improvement, explanation, confidencePct, citation };
-}
-
-/* =========================================================
-   UI NAVIGATION & UPLOAD SCREEN LOGIC
-   ========================================================= */
-claimChartDrop.addEventListener('click', () => claimChartInput.click());
-supportDocsDrop.addEventListener('click', () => supportDocsInput.click());
-
-claimChartInput.addEventListener('change', (e) => {
-  if (e.target.files.length > 0) {
-    claimChartFileName.textContent = e.target.files[0].name;
-    analyzeBtn.disabled = false;
-  }
-});
-
-supportDocsInput.addEventListener('change', (e) => {
-  if (e.target.files.length > 0) {
-    supportDocsFileName.innerHTML = `${e.target.files.length} document(s) attached`;
-  }
-});
-
-function launchApp() {
-  uploadScreen.style.display = 'none';
-  appRoot.style.display = 'flex';
-  renderClaimsList();
-  updateHeaderCounts();
-
-  // Welcome AI message
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Welcome to the Lumenci Claim Chart Studio!</p>
-    <p>I have analyzed your claim chart for <strong>US 10,982,417 B2</strong>. There are 7 claim elements, with 4 flagged for review.</p>
-    <p>Select any element from the right panel to begin, or click below to start with the first flagged item.</p>`;
-    const row = document.createElement('div');
-    row.className = 'msg-actions';
-    const firstNeeds = claimElements.find(e => e.status === 'needs-review');
-    if (firstNeeds) {
-      const btn = document.createElement('button');
-      btn.className = 'chip-btn';
-      btn.textContent = `Start with Element ${firstNeeds.id}`;
-      btn.onclick = () => selectClaim(firstNeeds.id);
-      row.appendChild(btn);
-    }
-    wrap.appendChild(row);
-    bubble(wrap, 'ai');
-  }, 400);
-}
-
-analyzeBtn.addEventListener('click', launchApp);
-sampleBtn.addEventListener('click', launchApp);
-
-/* Dropdown Toggle */
-const artifactsDropdown = document.getElementById('artifactsDropdown');
-const artifactsTrigger = document.getElementById('artifactsTrigger');
-artifactsTrigger.addEventListener('click', (e) => {
-  e.stopPropagation();
-  artifactsDropdown.classList.toggle('open');
-});
-document.addEventListener('click', () => artifactsDropdown.classList.remove('open'));
-
-/* =========================================================
-   RIGHT PANEL RENDERING
-   ========================================================= */
-function statusMeta(status) {
-  if (status === 'reviewed') return { cls: 'reviewed', label: 'Reviewed' };
-  if (status === 'pending') return { cls: 'pending', label: 'Pending Evidence' };
-  return { cls: 'review', label: 'Needs Review' };
-}
-
+/* RENDERING PANEL */
 function renderClaimsList() {
   claimsList.innerHTML = '';
   claimElements.forEach(el => {
-    const meta = statusMeta(el.status);
     const card = document.createElement('div');
     card.className = 'claim-card' + (el.id === currentElementId ? ' active' : '');
     card.innerHTML = `
       <div class="claim-card-top">
         <span class="claim-id">${el.id}</span>
-        <span class="status-pill ${meta.cls}"><span class="dot"></span>${meta.label}</span>
+        <span class="status-pill ${el.status.replace('-','')}"><span class="dot"></span>${el.status}</span>
       </div>
       <p class="claim-text">${escapeHtml(el.text)}</p>
       <div class="claim-card-foot"><span class="claim-ref">${escapeHtml(el.evidence)}</span></div>
     `;
-    card.addEventListener('click', () => selectClaim(el.id));
+    card.onclick = () => selectClaim(el.id);
     claimsList.appendChild(card);
   });
 }
@@ -786,248 +590,63 @@ function updateHeaderCounts() {
   progressPct.textContent = `${Math.round((reviewed / total) * 100)}% complete`;
 }
 
-/* =========================================================
-   REVIEW & CHAT FLOW
-   ========================================================= */
 function selectClaim(id) {
-  const el = getElement(id);
-  if (!el) return;
   currentElementId = id;
   renderClaimsList();
-  addUserMessage(`Let's look at ${id}.`);
-  aiRespond(() => buildReviewCard(el), 600);
-}
-
-function buildReviewCard(el) {
-  const wrap = document.createElement('div');
-  let explanation = '';
+  const el = claimElements.find(e => e.id === id);
+  addUserMessage(`Reviewing element ${id}`);
   
-  if (el.status === 'reviewed') {
-    explanation = `<p>Here's where <strong>${el.id}</strong> stands: "${escapeHtml(el.text)}"</p>
-    <p><span class="suggestion-label">Current evidence</span>${escapeHtml(el.evidence)}</p>
-    <p><span class="suggestion-label">Current reasoning</span>${escapeHtml(el.reasoning)}</p>
-    <p>This element has been reviewed and is well supported.</p>`;
-  } else if (el.status === 'pending') {
-    explanation = `<p>Here's where <strong>${el.id}</strong> stands: "${escapeHtml(el.text)}"</p>
-    <p><span class="suggestion-label">Current evidence</span>${escapeHtml(el.evidence)}</p>
-    <p><span class="suggestion-label">Status</span>This element is marked as <strong>Pending Evidence</strong>.</p>`;
-  } else {
-    explanation = `<p>Let me walk you through <strong>${el.id}</strong>: "${escapeHtml(el.text)}"</p>
-    <p><span class="suggestion-label">Current evidence</span>${escapeHtml(el.evidence)}</p>
-    <p><span class="suggestion-label">Current reasoning</span>${escapeHtml(el.reasoning)}</p>
-    <p><span class="suggestion-label">Why this needs improvement</span>${escapeHtml(el.weakness)}</p>
-    <p><span class="suggestion-label">Issue type</span><span class="issue-badge">${escapeHtml(el.issueType)}</span></p>
-    <p><span class="suggestion-label">Confidence</span><span class="confidence-badge ${el.confidenceLevel.toLowerCase()}">${el.confidenceLevel} · ${el.confidencePct}%</span></p>`;
-  }
-  
-  wrap.innerHTML = explanation;
-  
-  const row = document.createElement('div');
-  row.className = 'msg-actions';
-  const actions = ISSUE_ACTIONS[el.issueType] || Object.keys(REFINEMENT_TEMPLATES);
-  actions.forEach(action => {
-    const btn = document.createElement('button');
-    btn.className = 'chip-btn';
-    btn.textContent = action;
-    btn.onclick = () => handleContextualAction(el.id, action);
-    row.appendChild(btn);
-  });
-  wrap.appendChild(row);
-  bubble(wrap, 'ai');
-}
-
-function handleContextualAction(id, action) {
-  const el = getElement(id);
-  addUserMessage(action);
-  routeAction(el, action);
-}
-
-function routeAction(el, action) {
-  if (action === 'Explain Why') { explainWhy(el); return; }
-  if (action === 'Upload Supporting Document') { requestUpload(el); return; }
-  if (action === 'Provide Product URL') { promptForProductUrl(el); return; }
-  if (!el.hasEvidence) { noEvidenceFlow(el); return; }
-  generateSuggestionFlow(el, action, null);
-}
-
-function explainWhy(el) {
   aiRespond(() => {
     const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>${escapeHtml(el.weakness)}</p><p>In short: ${escapeHtml(el.reasoning)}</p>`;
-    bubble(wrap, 'ai');
-  });
-}
-
-function requestUpload(el) {
-  pendingUploadElementId = el.id;
-  fileInput.click();
-}
-
-function promptForProductUrl(el) {
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Paste the product URL below:</p>`;
-    const form = document.createElement('div');
-    form.className = 'inline-form';
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.placeholder = 'https://...';
-    const submit = document.createElement('button');
-    submit.className = 'btn-apply';
-    submit.textContent = 'Submit';
-    submit.onclick = () => {
-      if (!input.value.trim()) return;
-      input.disabled = true;
-      submit.disabled = true;
-      resumeAfterDocument(el, 'product URL you provided');
+    wrap.innerHTML = `<p><strong>${el.id}</strong>: "${escapeHtml(el.text)}"</p>
+    <p><span class="suggestion-label">Evidence</span>${escapeHtml(el.evidence)}</p>
+    <p><span class="suggestion-label">Reasoning</span>${escapeHtml(el.reasoning)}</p>`;
+    
+    const row = document.createElement('div');
+    row.className = 'action-btn-row';
+    const applyBtn = document.createElement('button');
+    applyBtn.className = 'btn-apply';
+    applyBtn.textContent = 'Approve Mapping';
+    applyBtn.onclick = () => {
+      el.status = 'reviewed';
+      renderClaimsList();
+      updateHeaderCounts();
+      addUserMessage(`Approved ${el.id}`);
+      aiRespond(() => {
+        const confirm = document.createElement('div');
+        confirm.innerHTML = `<p>✓ Updated status of ${el.id} to <strong>Reviewed</strong>.</p>`;
+        bubble(confirm, 'ai');
+      });
     };
-    form.append(input, submit);
-    wrap.appendChild(form);
+    row.appendChild(applyBtn);
+    wrap.appendChild(row);
     bubble(wrap, 'ai');
   });
 }
 
-function generateSuggestionFlow(el, actionLabel, customText, opts = {}) {
-  aiRespond(() => {
-    const suggestion = buildSuggestion(el, actionLabel, customText, opts);
-    presentSuggestion(el, suggestion);
-  }, 800);
-}
-
-function presentSuggestion(el, suggestion) {
-  const level = confidenceLabel(suggestion.confidencePct);
-  const wrap = document.createElement('div');
-  wrap.innerHTML = `
-    <p><span class="suggestion-label">Suggested improvement</span>${escapeHtml(suggestion.improvement)}</p>
-    <p><span class="suggestion-label">Explanation</span>${escapeHtml(suggestion.explanation)}</p>
-    <p><span class="suggestion-label">Confidence</span><span class="confidence-badge ${level.toLowerCase()}">${level} · ${suggestion.confidencePct}%</span></p>
-    <p><span class="suggestion-label">Supporting citation</span><span class="cite-chip">${escapeHtml(suggestion.citation)}</span></p>
-  `;
-
-  const row = document.createElement('div');
-  row.className = 'action-btn-row';
-  const applyBtn = document.createElement('button'); applyBtn.className = 'btn-apply'; applyBtn.textContent = 'Apply';
-  const editBtn = document.createElement('button'); editBtn.className = 'btn-edit'; editBtn.textContent = 'Edit';
-  const rejectBtn = document.createElement('button'); rejectBtn.className = 'btn-reject'; rejectBtn.textContent = 'Reject';
-  row.append(applyBtn, editBtn, rejectBtn);
-
-  wrap.appendChild(row);
-
-  applyBtn.onclick = () => {
-    row.querySelectorAll('button').forEach(b => b.disabled = true);
-    applySuggestion(el, suggestion);
-  };
-  rejectBtn.onclick = () => {
-    row.querySelectorAll('button').forEach(b => b.disabled = true);
-    rejectSuggestion(el);
-  };
-
-  bubble(wrap, 'ai');
-  lastSuggestion = { elementId: el.id, ...suggestion };
-}
-
-function applySuggestion(el, suggestion) {
-  historyStack.push({ elementId: el.id, snapshot: { status: el.status, evidence: el.evidence, reasoning: el.reasoning } });
-  el.status = 'reviewed';
-  el.evidence = suggestion.citation;
-  el.reasoning = suggestion.improvement;
-  renderClaimsList();
-  updateHeaderCounts();
-
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p><strong>✓</strong> Applied successfully. The claim chart for <strong>${el.id}</strong> has been updated.</p>`;
-    bubble(wrap, 'ai').classList.add('confirmation');
-  }, 400);
-}
-
-function rejectSuggestion(el) {
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Change discarded for <strong>${el.id}</strong>.</p>`;
-    bubble(wrap, 'ai');
-  });
-}
-
-function noEvidenceFlow(el) {
-  el.status = 'pending';
-  pausedElementId = el.id;
-  renderClaimsList();
-  updateHeaderCounts();
-
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>I couldn't find sufficient supporting evidence for <strong>${el.id}</strong> in the current documentation.</p>`;
-    bubble(wrap, 'ai');
-  });
-}
-
-function resumeAfterDocument(el, sourceLabel) {
-  el.hasEvidence = true;
-  currentElementId = el.id;
-  renderClaimsList();
-
-  aiRespond(() => {
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `<p>Thanks — I've reviewed the ${escapeHtml(sourceLabel)}. Continuing with <strong>${el.id}</strong>.</p>`;
-    bubble(wrap, 'ai');
-    aiRespond(() => {
-      const suggestion = buildSuggestion(el, 'Find Missing Mapping', null, { sourceLabel });
-      presentSuggestion(el, suggestion);
-    }, 600);
-  }, 400);
-}
-
-fileInput.addEventListener('change', () => {
-  if (fileInput.files.length === 0) return;
-  if (pendingUploadElementId) {
-    const el = getElement(pendingUploadElementId);
-    pendingUploadElementId = null;
-    resumeAfterDocument(el, 'technical documentation you uploaded');
-  }
-  fileInput.value = '';
-});
-
-attachBtn.addEventListener('click', () => {
-  pendingUploadElementId = currentElementId || pausedElementId || null;
-  fileInput.click();
-});
-
-/* =========================================================
-   INPUT HANDLING
-   ========================================================= */
+/* CHAT MESSAGING */
 function handleSend() {
-  const text = textarea.value.trim();
-  if (!text) return;
+  const val = textarea.value.trim();
+  if (!val) return;
   textarea.value = '';
-  textarea.style.height = 'auto';
-  addUserMessage(text);
-
-  if (!currentElementId) {
-    aiRespond(() => {
-      const wrap = document.createElement('div');
-      wrap.innerHTML = `<p>Please select a claim element from the right panel so I know which limitation to work on.</p>`;
-      bubble(wrap, 'ai');
-    });
-    return;
-  }
-
-  const el = getElement(currentElementId);
-  generateSuggestionFlow(el, 'Custom Refinement', text);
+  addUserMessage(val);
+  
+  aiRespond(() => {
+    const wrap = document.createElement('div');
+    wrap.innerHTML = `<p>Understood. I will process: "<em>${escapeHtml(val)}</em>"</p>`;
+    bubble(wrap, 'ai');
+  });
 }
 
-sendBtn.addEventListener('click', handleSend);
-textarea.addEventListener('keydown', (e) => {
+sendBtn.onclick = handleSend;
+textarea.onkeydown = (e) => {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     handleSend();
   }
-});
+};
 
-textarea.addEventListener('input', () => {
-  textarea.style.height = 'auto';
-  textarea.style.height = Math.min(textarea.scrollHeight, 160) + 'px';
-});
+attachBtn.onclick = () => hiddenFileInput.click();
 </script>
 </body>
 </html>
